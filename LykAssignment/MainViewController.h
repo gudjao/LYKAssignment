@@ -8,6 +8,7 @@
 
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import <ChameleonFramework/Chameleon.h>
+#import <SVProgressHUD/SVProgressHUD.h>
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
@@ -18,7 +19,10 @@
 
 @interface MainViewController : ASViewController <FBSDKLoginButtonDelegate, GIDSignInDelegate, GIDSignInUIDelegate>
 
+@property (strong, nonatomic) ASButtonNode *continueButtonNode;
+
 @property (strong, nonatomic) ASDisplayNode *fbLoginButtonNode;
-@property (strong, nonatomic) ASDisplayNode *googleButtonNode;
+@property (strong, nonatomic) ASButtonNode *googleButtonNode;
+//@property (strong, nonatomic) ASDisplayNode *googleButtonNode;
 
 @end

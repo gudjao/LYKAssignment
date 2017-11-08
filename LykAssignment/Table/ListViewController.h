@@ -21,14 +21,23 @@
 
 #import "ListCellNode.h"
 
-@interface ListViewController : ASViewController <ASTableDelegate, ASTableDataSource> {
+@interface ListViewController : ASViewController <ASTableDelegate, ASTableDataSource, UISearchBarDelegate> {
     UIRefreshControl *_refreshControl;
+    BOOL _willBatchFetch;
+    BOOL _isFiltered;
 }
 
+// Search
+@property (strong, nonatomic) ASDisplayNode *searchBarNode;
+
+// Table
 @property (strong, nonatomic) ASTableNode *tableNode;
 
+// Google data
 @property (strong, nonatomic) GoogleModel *googleData;
 
+// List
 @property (strong, nonatomic) NSMutableArray *dataList;
+@property (strong, nonatomic) NSMutableArray *filteredDataList;
 
 @end

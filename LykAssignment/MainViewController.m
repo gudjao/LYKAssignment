@@ -34,25 +34,60 @@
             return fbLoginButton;
         }];
         
+        /*
         self.googleButtonNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * _Nonnull{
             GIDSignInButton *googleSigninButton = [[GIDSignInButton alloc] initWithFrame:CGRectZero];
+            [googleSigninButton setSelected:1];
             return googleSigninButton;
         }];
+        */
+
+        self.googleButtonNode = [[ASButtonNode alloc] init];
+        [self.googleButtonNode setTitle:@"Login with Google"
+                                 withFont:[UIFont systemFontOfSize:14.0f]
+                                withColor:[UIColor flatGrayColorDark]
+                                 forState:UIControlStateNormal];
+        self.googleButtonNode.backgroundColor = [UIColor whiteColor];
+        self.googleButtonNode.hitTestSlop = UIEdgeInsetsMake(-5, -10, -5, -10);
+        self.googleButtonNode.contentEdgeInsets = UIEdgeInsetsMake(5, 10, 5, 10);
+        self.googleButtonNode.cornerRadius = 4.0f;
+        [self.googleButtonNode addTarget:self
+                                  action:@selector(googleSignIn:)
+                        forControlEvents:ASControlNodeEventTouchUpInside];
+        [self.googleButtonNode setImage:[UIImage as_imageNamed:@"google-icon"]
+                               forState:UIControlStateNormal];
+        
+        self.continueButtonNode = [[ASButtonNode alloc] init];
+        [self.continueButtonNode setTitle:@"Click here to continue..."
+                                 withFont:[UIFont boldSystemFontOfSize:15.0f]
+                                withColor:[UIColor flatNavyBlueColor]
+                                 forState:UIControlStateNormal];
+        self.continueButtonNode.hitTestSlop = UIEdgeInsetsMake(-5, -10, -5, -10);
+        self.continueButtonNode.contentEdgeInsets = UIEdgeInsetsMake(5, 10, 5, 10);
+        self.continueButtonNode.cornerRadius = 4.0f;
+        [self.continueButtonNode addTarget:self
+                                    action:@selector(goListVC)
+                          forControlEvents:ASControlNodeEventTouchUpInside];
         
         self.node.layoutSpecBlock = ^ASLayoutSpec * _Nonnull(__kindof ASDisplayNode * _Nonnull node, ASSizeRange constrainedSize) {
             
-            weakSelf.fbLoginButtonNode.style.height = ASDimensionMake(40.0f);
-            weakSelf.fbLoginButtonNode.style.maxWidth = ASDimensionMake(280.0f);
+            weakSelf.continueButtonNode.style.height = ASDimensionMake(48.0f);
+            weakSelf.continueButtonNode.style.width = ASDimensionMake(240.0f);
+            weakSelf.continueButtonNode.style.spacingAfter = 60.0f;
             
-            weakSelf.googleButtonNode.style.height = ASDimensionMake(40.0f);
-            weakSelf.googleButtonNode.style.maxWidth = ASDimensionMake(280.0f);
+            weakSelf.fbLoginButtonNode.style.height = ASDimensionMake(48.0f);
+            weakSelf.fbLoginButtonNode.style.width = ASDimensionMake(240.0f);
+            
+            weakSelf.googleButtonNode.style.height = ASDimensionMake(48.0f);
+            weakSelf.googleButtonNode.style.width = ASDimensionMake(240.0f);
             
             ASStackLayoutSpec *stackButtons = [ASStackLayoutSpec
                                                stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                                spacing:15.0f
                                                justifyContent:ASStackLayoutJustifyContentCenter
                                                alignItems:ASStackLayoutAlignItemsCenter
-                                               children:@[weakSelf.fbLoginButtonNode,
+                                               children:@[weakSelf.continueButtonNode,
+                                                          weakSelf.fbLoginButtonNode,
                                                           weakSelf.googleButtonNode]];
             
             return [ASCenterLayoutSpec centerLayoutSpecWithCenteringOptions:ASCenterLayoutSpecCenteringXY
@@ -67,6 +102,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    // ProgressHUD
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+    
     // Google
     GIDSignIn *signIn = [GIDSignIn sharedInstance];
     NSLog(@"Current scopes: %@", signIn.scopes);
@@ -80,10 +118,7 @@
     signIn.uiDelegate = self;
     signIn.delegate = self;
     
-    // Facebook
-    if ([FBSDKAccessToken currentAccessToken]) {
-        //[self goListVC];
-    }
+    [self checkLogin];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -92,20 +127,40 @@
     self.navigationController.navigationBar.hidden = YES;
 }
 
+#pragma mark - Login checker
+
+- (void)checkLogin {
+    if([[GIDSignIn sharedInstance] currentUser] || [FBSDKAccessToken currentAccessToken]) {
+        [self.continueButtonNode setTitle:@"Click here to continue..."
+                                 withFont:[UIFont boldSystemFontOfSize:15.0f]
+                                withColor:[UIColor flatNavyBlueColor]
+                                 forState:UIControlStateNormal];
+        self.continueButtonNode.enabled = 1;
+    } else {
+        [self.continueButtonNode setTitle:@"Please login with Facebook or Google..."
+                                 withFont:[UIFont boldSystemFontOfSize:15.0f]
+                                withColor:[UIColor flatGrayColorDark]
+                                 forState:UIControlStateNormal];
+        self.continueButtonNode.enabled = 0;
+    }
+    
+    [self.node setNeedsLayout];
+}
+
 #pragma mark - FBSDKLoginButtonDelegate
 
 - (void)loginButton:(FBSDKLoginButton *)loginButton
 didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
               error:(NSError *)error {
+    [self checkLogin];
+    
     if(error) {
         return;
     }
-    
-    [self goListVC];
 }
 
 - (void)loginButtonDidLogOut:(FBSDKLoginButton *)loginButton {
-    
+    [self checkLogin];
 }
 
 #pragma mark - GIDSignInDelegate
@@ -113,24 +168,52 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 - (void)signIn:(GIDSignIn *)signIn
 didSignInForUser:(GIDGoogleUser *)user
      withError:(NSError *)error {
+    [self checkLogin];
+    
     if(error) {
         return;
     }
     
-    [self goListVC];
+    [self.googleButtonNode setTitle:@"Logout Google"
+                           withFont:[UIFont systemFontOfSize:14.0f]
+                          withColor:[UIColor flatGrayColorDark]
+                           forState:UIControlStateNormal];
+    
+    [self.node setNeedsLayout];
+    [SVProgressHUD dismiss];
 }
 
 - (void)signIn:(GIDSignIn *)signIn
 didDisconnectWithUser:(GIDGoogleUser *)user
      withError:(NSError *)error {
+    [self checkLogin];
     
+    if(error) {
+        return;
+    }
+    
+    [self.googleButtonNode setTitle:@"Login with Google"
+                           withFont:[UIFont systemFontOfSize:14.0f]
+                          withColor:[UIColor flatGrayColorDark]
+                           forState:UIControlStateNormal];
+    
+    [SVProgressHUD dismiss];
 }
 
 #pragma mark - GIDSignInUIDelegate
 
+- (void)googleSignIn:(ASButtonNode *)button {
+    [SVProgressHUD show];
+    if ([GIDSignIn sharedInstance].currentUser) {
+        [[GIDSignIn sharedInstance] disconnect];
+    } else {
+        [[GIDSignIn sharedInstance] signIn];
+    }
+}
+
 // pressed the Sign In button
 - (void)signInWillDispatch:(GIDSignIn *)signIn error:(NSError *)error {
-    
+    [SVProgressHUD dismiss];
 }
 
 // Present a view that prompts the user to sign in with Google

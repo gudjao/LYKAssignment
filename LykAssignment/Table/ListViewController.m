@@ -22,14 +22,51 @@
         // Config
         self.node.automaticallyManagesSubnodes = YES;
         
+        // Search
+        self.searchBarNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * _Nonnull {
+            UISearchBar *searchBar = [[UISearchBar alloc] init];
+            searchBar.barStyle = UIBarStyleDefault;
+            //searchBar.searchBarStyle = UISearchBarStyleMinimal;
+            searchBar.delegate = self;
+            return searchBar;
+        }];
+        
         // Table Node
         self.tableNode = [[ASTableNode alloc] initWithStyle:UITableViewStylePlain];
         self.tableNode.delegate = self;
         self.tableNode.dataSource = self;
+        self.tableNode.view.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
         
         __weak typeof(self) weakSelf = self;
         self.node.layoutSpecBlock = ^ASLayoutSpec * _Nonnull(__kindof ASDisplayNode * _Nonnull node, ASSizeRange constrainedSize) {
-            return [ASWrapperLayoutSpec wrapperWithLayoutElement:weakSelf.tableNode];
+            weakSelf.tableNode.style.preferredSize = constrainedSize.max;
+            weakSelf.tableNode.style.flexGrow = YES;
+            weakSelf.tableNode.style.flexShrink = YES;
+            
+            CGFloat inset;
+            if ((self.edgesForExtendedLayout & UIRectEdgeTop) == 0) {
+                inset = 0.0;
+            } else {
+                inset = CGRectGetHeight(weakSelf.navigationController.navigationBar.frame) + CGRectGetHeight([UIApplication sharedApplication].statusBarFrame);
+            }
+            
+            ASLayoutSpec *spacer = [ASLayoutSpec new];
+            spacer.style.height = ASDimensionMakeWithPoints(inset);
+            
+            weakSelf.searchBarNode.style.flexShrink = 1.0f;
+            weakSelf.searchBarNode.style.flexGrow = 1.0f;
+            weakSelf.searchBarNode.style.height = ASDimensionMake(54.0f);
+            
+            ASStackLayoutSpec *stackContent = [ASStackLayoutSpec
+                                               stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
+                                               spacing:0.0f
+                                               justifyContent:ASStackLayoutJustifyContentStart
+                                               alignItems:ASStackLayoutAlignItemsStretch
+                                               children:@[spacer,
+                                                          weakSelf.searchBarNode,
+                                                          weakSelf.tableNode]];
+            
+            return stackContent;
         };
     }
     return self;
@@ -48,6 +85,8 @@
     self.navigationItem.title = @"List";
     
     // Data
+    _willBatchFetch = 0;
+    _isFiltered = 0;
     self.dataList = [NSMutableArray new];
     self.googleData = nil;
     
@@ -68,24 +107,55 @@
 #pragma mark - Fetch
 
 - (void)fetchList {
+    if(_isFiltered) {
+        return;
+    }
+    
     [_refreshControl beginRefreshing];
     
-    
     dispatch_group_t group = dispatch_group_create();
-
-    [self fetchGoogle:nil];
     
-//    dispatch_group_enter(group);
-//    [self fetchFacebook];
-//
-//    dispatch_group_enter(group);
-//    [self fetchGoogle:^(BOOL finish) {
-//
-//    }];
-//
-//    dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-//        NSLog(@"finally!");
-//    });
+    __block NSArray *oldData = [self.dataList copy];
+    _willBatchFetch = 0;
+    
+    dispatch_group_enter(group);
+    [self fetchFacebook:^(BOOL finish) {
+        dispatch_group_leave(group);
+    }];
+    
+    dispatch_group_enter(group);
+    [self fetchGoogle:^(BOOL finish) {
+        dispatch_group_leave(group);
+    }];
+    
+    dispatch_group_notify(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _willBatchFetch = 1;
+            
+            [self.tableNode performBatchUpdates:^{
+                NSMutableArray *insertIndexPaths = [NSMutableArray array];
+                NSMutableArray *deleteIndexPaths = [NSMutableArray array];
+                
+                for(id oldObject in oldData) {
+                    NSInteger oldItem = [oldData indexOfObject:oldObject];
+                    [self.dataList removeObject:oldObject];
+                    [deleteIndexPaths addObject:[NSIndexPath indexPathForItem:oldItem inSection:0]];
+                }
+                
+                for(id newObject in self.dataList ) {
+                    NSInteger item = [self.dataList indexOfObject:newObject];
+                    [insertIndexPaths addObject:[NSIndexPath indexPathForItem:item inSection:0]];
+                }
+                
+                [self.tableNode insertRowsAtIndexPaths:insertIndexPaths
+                                      withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableNode deleteRowsAtIndexPaths:deleteIndexPaths
+                                      withRowAnimation:UITableViewRowAnimationNone];
+            } completion:nil];
+            
+            [_refreshControl endRefreshing];
+        });
+    });
 }
 
 - (void)fetchGoogle:(void (^)(BOOL finish))completion {
@@ -109,40 +179,23 @@
                  if(!modelErr) {
                      weakSelf.googleData = data;
                      
-                     [weakSelf.tableNode performBatchUpdates:^{
-                         NSMutableArray *insertIndexPaths = [NSMutableArray array];
-                         NSMutableArray *deleteIndexPaths = [NSMutableArray array];
-                         
-                         NSArray *oldData = [weakSelf.dataList copy];
-                         for(id oldModel in oldData) {
-                             if(![oldModel isKindOfClass:[GoogleConnectionModel class]]) {
-                                 return;
-                             }
-                             NSInteger oldItem = [oldData indexOfObject:oldModel];
-                             [weakSelf.dataList removeObject:oldModel];
-                             [deleteIndexPaths addObject:[NSIndexPath indexPathForItem:oldItem inSection:0]];
-                         }
-                         
-                         for(GoogleConnectionModel *connection in data.connections) {
-                             [weakSelf.dataList addObject:connection];
-                             NSInteger item = [weakSelf.dataList indexOfObject:connection];
-                             [insertIndexPaths addObject:[NSIndexPath indexPathForItem:item inSection:0]];
-                         }
-                         
-                         [weakSelf.tableNode insertRowsAtIndexPaths:insertIndexPaths
-                                                   withRowAnimation:UITableViewRowAnimationFade];
-                         [weakSelf.tableNode deleteRowsAtIndexPaths:deleteIndexPaths
-                                                   withRowAnimation:UITableViewRowAnimationNone];
-                     } completion:nil];
+                     for(GoogleConnectionModel *connection in data.connections) {
+                         [weakSelf.dataList addObject:connection];
+                     }
+                     
+                     completion(1);
+                 } else {
+                     completion(0);
                  }
+             } else {
+                 completion(0);
              }
-             [_refreshControl endRefreshing];
          } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-             [_refreshControl endRefreshing];
+             completion(0);
          }];
 }
 
-- (void)fetchFacebook {
+- (void)fetchFacebook:(void (^)(BOOL finish))completion { 
     // Facebook friends
     NSDictionary *params = @{
                              @"fields" : @"id,name,email,picture"
@@ -161,7 +214,8 @@
                                           id result,
                                           NSError *error) {
         // Handle the result
-        if(![result isKindOfClass:[NSDictionary class]]) {
+        if(![result isKindOfClass:[NSDictionary class]] || error) {
+            completion(0);
             return;
         }
         
@@ -169,36 +223,16 @@
         FacebookModel *facebook = [[FacebookModel alloc] initWithDictionary:result
                                                                       error:&modelErr];
         
-        [weakSelf.tableNode performBatchUpdates:^{
-            NSMutableArray *insertIndexPaths = [NSMutableArray array];
-            NSMutableArray *deleteIndexPaths = [NSMutableArray array];
-            
-            NSArray *oldData = [weakSelf.dataList copy];
-            for(id oldModel in oldData) {
-                if(![oldModel isKindOfClass:[FacebookDataModel class]]) {
-                    return;
-                }
-                NSInteger oldItem = [oldData indexOfObject:oldModel];
-                [weakSelf.dataList removeObject:oldModel];
-                [deleteIndexPaths addObject:[NSIndexPath indexPathForItem:oldItem inSection:0]];
-            }
-            
-            for(FacebookDataModel *fbData in facebook.data) {
-                [weakSelf.dataList addObject:fbData];
-                NSInteger item = [weakSelf.dataList indexOfObject:fbData];
-                [insertIndexPaths addObject:[NSIndexPath indexPathForItem:item inSection:0]];
-            }
-            
-            [weakSelf.tableNode insertRowsAtIndexPaths:insertIndexPaths
-                                      withRowAnimation:UITableViewRowAnimationFade];
-            [weakSelf.tableNode deleteRowsAtIndexPaths:deleteIndexPaths
-                                      withRowAnimation:UITableViewRowAnimationNone];
-        } completion:nil];
-        
         if(modelErr) {
-            NSLog(@"Model Error: %@", modelErr);
+            completion(0);
             return;
         }
+        
+        for(FacebookDataModel *fbData in facebook.data) {
+            [weakSelf.dataList addObject:fbData];
+        }
+        
+        completion(1);
     }];
 }
 
@@ -209,11 +243,20 @@
 }
 
 - (NSInteger)tableNode:(ASTableNode *)tableNode numberOfRowsInSection:(NSInteger)section {
-    return self.dataList.count;
+    if(_isFiltered) {
+        return self.filteredDataList.count;
+    } else {
+        return self.dataList.count;
+    }
 }
 
 - (ASCellNodeBlock)tableNode:(ASTableNode *)tableNode nodeBlockForRowAtIndexPath:(NSIndexPath *)indexPath {
-    id data = [self.dataList objectAtIndex:indexPath.row];
+    id data;
+    if(_isFiltered) {
+        data = [self.filteredDataList objectAtIndex:indexPath.row];
+    } else {
+        data = [self.dataList objectAtIndex:indexPath.row];
+    }
     return ^{
         ListCellNode *cellNode = [[ListCellNode alloc] init];
         
@@ -280,31 +323,64 @@
                          
                          [tableNode insertRowsAtIndexPaths:insertIndexPaths
                                           withRowAnimation:UITableViewRowAnimationFade];
-                     } completion:^(BOOL finished) {
-                         [context completeBatchFetching:YES];
-                     }];
-                 } else {
-                     [context completeBatchFetching:YES];
+                     } completion:nil];
                  }
-             } else {
-                 [context completeBatchFetching:YES];
              }
+             [context completeBatchFetching:YES];
          } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
              [context completeBatchFetching:YES];
          }];
 }
 
 - (BOOL)shouldBatchFetchForTableNode:(ASTableNode *)tableNode {
+    if(_isFiltered) {
+        return 0;
+    }
+    
     if(self.googleData.nextPageToken && self.dataList.count > 0) {
-        if(self.googleData.totalItems > self.dataList.count) {
-            return YES;
+        if(_willBatchFetch) {
+            return 1;
         } else {
-            return NO;
+            return 0;
         }
     }
-    return NO;
+    return 0;
 }
 
+#pragma mark - UISearchBar DataSource and Delegate
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    if(searchText.length == 0)
+    {
+        _isFiltered = false;
+    }
+    else
+    {
+        _isFiltered = true;
+        self.filteredDataList = [[NSMutableArray alloc] init];
+        NSMutableArray *searchArray = [NSMutableArray new];
+        for (id object in self.dataList)
+        {
+            if([object isKindOfClass:[GoogleConnectionModel class]]) {
+                NSDictionary *dataDict = [(GoogleConnectionModel *)object toDictionary];
+                [searchArray addObject:dataDict];
+            }
+        }
+        
+        NSString *str = searchText;
+        NSPredicate *pred = [NSPredicate predicateWithFormat:@"ANY names.displayName CONTAINS %@", str];
+        NSArray *result = [searchArray filteredArrayUsingPredicate:pred];
+        
+        for (NSDictionary *filteredDataDict in result) {
+            GoogleConnectionModel *connection = [[GoogleConnectionModel alloc] initWithDictionary:filteredDataDict
+                                                                                            error:nil];
+            [self.filteredDataList addObject:connection];
+        }
+    }
+    [self.tableNode reloadData];
+}
+
+#pragma mark - Memory Warning
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

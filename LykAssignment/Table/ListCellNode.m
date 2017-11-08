@@ -59,7 +59,7 @@
     // Image
     ASRatioLayoutSpec *ratioProfileImage = [ASRatioLayoutSpec ratioLayoutSpecWithRatio:1.0f
                                                                                  child:self.profileImageNode];
-    ratioProfileImage.style.flexBasis = ASDimensionMakeWithFraction(0.18f);
+    ratioProfileImage.style.flexBasis = ASDimensionMakeWithFraction(0.16f);
     ratioProfileImage.style.minWidth = ASDimensionMake(40.0f);
     ratioProfileImage.style.maxWidth = ASDimensionMake(100.0f);
     
