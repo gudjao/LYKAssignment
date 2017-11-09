@@ -15,6 +15,8 @@
 
 #import "MainViewController.h"
 
+#import <OneSignal/OneSignal.h>
+
 @interface AppDelegate ()
 
 @end
@@ -24,6 +26,24 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    // Push Notifs
+    // Replace '11111111-2222-3333-4444-0123456789ab' with your OneSignal App ID.
+    [OneSignal initWithLaunchOptions:launchOptions
+                               appId:@"9fd78eb0-d757-44b0-be3b-21fff01428c6"
+            handleNotificationAction:nil
+                            settings:@{kOSSettingsKeyAutoPrompt: @false}];
+    OneSignal.inFocusDisplayType = OSNotificationDisplayTypeNotification;
+    
+    // Recommend moving the below line to prompt for push after informing the user about
+    //   how your app will use them.
+    [OneSignal promptForPushNotificationsWithUserResponse:^(BOOL accepted) {
+        NSLog(@"User accepted notifications: %d", accepted);
+    }];
+    
+    // Call syncHashedEmail anywhere in your iOS app if you have the user's email.
+    // This improves the effectiveness of OneSignal's "best-time" notification scheduling feature.
+    // [OneSignal syncHashedEmail:userEmail];
     
     // Disable ASLogggin
     ASDisableLogging();

@@ -14,6 +14,14 @@
 @protocol GoogleEmailModel;
 @protocol GoogleConnectionModel;
 
+@interface GoogleMetadataModel : JSONModel
+
+@property (nonatomic) BOOL primary;
+@property (nonatomic) NSString *sourceId;
+@property (nonatomic) NSString *type;
+    
+@end
+
 @interface GooglePhotoModel : JSONModel
 
 @property (nonatomic) NSString *url;
@@ -22,6 +30,7 @@
 
 @interface GoogleNameModel : JSONModel
 
+@property (nonatomic) GoogleMetadataModel *metadata;
 @property (nonatomic) NSString *givenName;
 @property (nonatomic) NSString *displayName;
 @property (nonatomic) NSString *familyName;

@@ -7,21 +7,50 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B3A70A8771B579B446E763D /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 998C45C9E2D266BB541B9E3F /* libPods-OneSignalNotificationServiceExtension.a */; };
 		B01F7E7B1FB1CD90007296AC /* ListCellNode.m in Sources */ = {isa = PBXBuildFile; fileRef = B01F7E7A1FB1CD90007296AC /* ListCellNode.m */; };
 		B08F757D1FB307EC00E0319D /* FacebookModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B08F757C1FB307EC00E0319D /* FacebookModel.m */; };
 		B0ACF08A1FB19DA00050991C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B0ACF0891FB19DA00050991C /* AppDelegate.m */; };
 		B0ACF0921FB19DA00050991C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0ACF0911FB19DA00050991C /* Assets.xcassets */; };
 		B0ACF0951FB19DA00050991C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0ACF0931FB19DA00050991C /* LaunchScreen.storyboard */; };
 		B0ACF0981FB19DA00050991C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B0ACF0971FB19DA00050991C /* main.m */; };
+		B0D6E3641FB4056B00A69B13 /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D6E3631FB4056B00A69B13 /* NotificationService.m */; };
+		B0D6E3681FB4056B00A69B13 /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B0D6E3601FB4056B00A69B13 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B0EEF5381FB20D7100051781 /* GoogleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B0EEF5371FB20D7100051781 /* GoogleModel.m */; };
 		B0EF4BFB1FB1A67300621B13 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0EF4BFA1FB1A67300621B13 /* MainViewController.m */; };
 		B0EF4BFF1FB1B55A00621B13 /* ListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0EF4BFE1FB1B55A00621B13 /* ListViewController.m */; };
 		BAC0963B6E84C551EBAC8E82 /* libPods-LykAssignment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D505A23D7E1ACA86226EE215 /* libPods-LykAssignment.a */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B0D6E3661FB4056B00A69B13 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B0ACF07D1FB19DA00050991C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B0D6E35F1FB4056B00A69B13;
+			remoteInfo = OneSignalNotificationServiceExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B0D6E36C1FB4056B00A69B13 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				B0D6E3681FB4056B00A69B13 /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		030D0D6D6BA5ED7ED4E27A81 /* Pods-LykAssignment.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LykAssignment.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LykAssignment/Pods-LykAssignment.debug.xcconfig"; sourceTree = "<group>"; };
+		68C83671A5AF1C243C9CF277 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
 		7AA113E389A3ECD31CD1EBC0 /* Pods-LykAssignment.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LykAssignment.release.xcconfig"; path = "Pods/Target Support Files/Pods-LykAssignment/Pods-LykAssignment.release.xcconfig"; sourceTree = "<group>"; };
+		998C45C9E2D266BB541B9E3F /* libPods-OneSignalNotificationServiceExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneSignalNotificationServiceExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B01F7E791FB1CD90007296AC /* ListCellNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ListCellNode.h; sourceTree = "<group>"; };
 		B01F7E7A1FB1CD90007296AC /* ListCellNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ListCellNode.m; sourceTree = "<group>"; };
 		B01F7E7C1FB1D6C7007296AC /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -34,12 +63,18 @@
 		B0ACF0941FB19DA00050991C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B0ACF0961FB19DA00050991C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0ACF0971FB19DA00050991C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		B0D6E3591FB4008B00A69B13 /* LykAssignment.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LykAssignment.entitlements; sourceTree = "<group>"; };
+		B0D6E3601FB4056B00A69B13 /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0D6E3621FB4056B00A69B13 /* NotificationService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationService.h; sourceTree = "<group>"; };
+		B0D6E3631FB4056B00A69B13 /* NotificationService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationService.m; sourceTree = "<group>"; };
+		B0D6E3651FB4056B00A69B13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0EEF5361FB20D7100051781 /* GoogleModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GoogleModel.h; sourceTree = "<group>"; };
 		B0EEF5371FB20D7100051781 /* GoogleModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GoogleModel.m; sourceTree = "<group>"; };
 		B0EF4BF91FB1A67300621B13 /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		B0EF4BFA1FB1A67300621B13 /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		B0EF4BFD1FB1B55A00621B13 /* ListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ListViewController.h; sourceTree = "<group>"; };
 		B0EF4BFE1FB1B55A00621B13 /* ListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ListViewController.m; sourceTree = "<group>"; };
+		B8AF59E8205BB112AAD74829 /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		D505A23D7E1ACA86226EE215 /* libPods-LykAssignment.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LykAssignment.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -52,6 +87,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B0D6E35D1FB4056B00A69B13 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0B3A70A8771B579B446E763D /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -60,6 +103,8 @@
 			children = (
 				030D0D6D6BA5ED7ED4E27A81 /* Pods-LykAssignment.debug.xcconfig */,
 				7AA113E389A3ECD31CD1EBC0 /* Pods-LykAssignment.release.xcconfig */,
+				B8AF59E8205BB112AAD74829 /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */,
+				68C83671A5AF1C243C9CF277 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -68,6 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				B0ACF0871FB19DA00050991C /* LykAssignment */,
+				B0D6E3611FB4056B00A69B13 /* OneSignalNotificationServiceExtension */,
 				B0ACF0861FB19DA00050991C /* Products */,
 				35103BFD90B3AD4AF6541D21 /* Pods */,
 				F39F6D3B4EBD5EE7DEAB159E /* Frameworks */,
@@ -78,6 +124,7 @@
 			isa = PBXGroup;
 			children = (
 				B0ACF0851FB19DA00050991C /* LykAssignment.app */,
+				B0D6E3601FB4056B00A69B13 /* OneSignalNotificationServiceExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -85,6 +132,7 @@
 		B0ACF0871FB19DA00050991C /* LykAssignment */ = {
 			isa = PBXGroup;
 			children = (
+				B0D6E3591FB4008B00A69B13 /* LykAssignment.entitlements */,
 				B0ACF0881FB19DA00050991C /* AppDelegate.h */,
 				B0ACF0891FB19DA00050991C /* AppDelegate.m */,
 				B0EF4BF91FB1A67300621B13 /* MainViewController.h */,
@@ -98,6 +146,16 @@
 				B0ACF0971FB19DA00050991C /* main.m */,
 			);
 			path = LykAssignment;
+			sourceTree = "<group>";
+		};
+		B0D6E3611FB4056B00A69B13 /* OneSignalNotificationServiceExtension */ = {
+			isa = PBXGroup;
+			children = (
+				B0D6E3621FB4056B00A69B13 /* NotificationService.h */,
+				B0D6E3631FB4056B00A69B13 /* NotificationService.m */,
+				B0D6E3651FB4056B00A69B13 /* Info.plist */,
+			);
+			path = OneSignalNotificationServiceExtension;
 			sourceTree = "<group>";
 		};
 		B0EEF5351FB20D5000051781 /* Models */ = {
@@ -126,6 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				D505A23D7E1ACA86226EE215 /* libPods-LykAssignment.a */,
+				998C45C9E2D266BB541B9E3F /* libPods-OneSignalNotificationServiceExtension.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -143,15 +202,36 @@
 				B0ACF0831FB19DA00050991C /* Resources */,
 				16B35251643A52566A29B263 /* [CP] Embed Pods Frameworks */,
 				7438A4F3A473A3E84698B6AE /* [CP] Copy Pods Resources */,
+				B0D6E36C1FB4056B00A69B13 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B0D6E3671FB4056B00A69B13 /* PBXTargetDependency */,
 			);
 			name = LykAssignment;
 			productName = LykAssignment;
 			productReference = B0ACF0851FB19DA00050991C /* LykAssignment.app */;
 			productType = "com.apple.product-type.application";
+		};
+		B0D6E35F1FB4056B00A69B13 /* OneSignalNotificationServiceExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B0D6E3691FB4056B00A69B13 /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */;
+			buildPhases = (
+				FFB2255ADD47CE4574993BF6 /* [CP] Check Pods Manifest.lock */,
+				B0D6E35C1FB4056B00A69B13 /* Sources */,
+				B0D6E35D1FB4056B00A69B13 /* Frameworks */,
+				B0D6E35E1FB4056B00A69B13 /* Resources */,
+				B196A0B373E28FDAB98E3117 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OneSignalNotificationServiceExtension;
+			productName = OneSignalNotificationServiceExtension;
+			productReference = B0D6E3601FB4056B00A69B13 /* OneSignalNotificationServiceExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -163,6 +243,18 @@
 				ORGANIZATIONNAME = "Juston Paul Alcantara";
 				TargetAttributes = {
 					B0ACF0841FB19DA00050991C = {
+						CreatedOnToolsVersion = 9.0;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
+					};
+					B0D6E35F1FB4056B00A69B13 = {
 						CreatedOnToolsVersion = 9.0;
 						ProvisioningStyle = Automatic;
 					};
@@ -182,6 +274,7 @@
 			projectRoot = "";
 			targets = (
 				B0ACF0841FB19DA00050991C /* LykAssignment */,
+				B0D6E35F1FB4056B00A69B13 /* OneSignalNotificationServiceExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -193,6 +286,13 @@
 			files = (
 				B0ACF0951FB19DA00050991C /* LaunchScreen.storyboard in Resources */,
 				B0ACF0921FB19DA00050991C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B0D6E35E1FB4056B00A69B13 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -254,6 +354,39 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LykAssignment/Pods-LykAssignment-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		B196A0B373E28FDAB98E3117 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FFB2255ADD47CE4574993BF6 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-OneSignalNotificationServiceExtension-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -271,7 +404,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B0D6E35C1FB4056B00A69B13 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0D6E3641FB4056B00A69B13 /* NotificationService.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B0D6E3671FB4056B00A69B13 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B0D6E35F1FB4056B00A69B13 /* OneSignalNotificationServiceExtension */;
+			targetProxy = B0D6E3661FB4056B00A69B13 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		B0ACF0931FB19DA00050991C /* LaunchScreen.storyboard */ = {
@@ -394,12 +543,14 @@
 			baseConfigurationReference = 030D0D6D6BA5ED7ED4E27A81 /* Pods-LykAssignment.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = LykAssignment/LykAssignment.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 7CY3EGY8C5;
 				INFOPLIST_FILE = LykAssignment/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.lyk.lykAssignment;
+				PRODUCT_BUNDLE_IDENTIFIER = com.juston.lykAssignment;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -411,14 +562,46 @@
 			baseConfigurationReference = 7AA113E389A3ECD31CD1EBC0 /* Pods-LykAssignment.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = LykAssignment/LykAssignment.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 7CY3EGY8C5;
 				INFOPLIST_FILE = LykAssignment/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.lyk.lykAssignment;
+				PRODUCT_BUNDLE_IDENTIFIER = com.juston.lykAssignment;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		B0D6E36A1FB4056B00A69B13 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B8AF59E8205BB112AAD74829 /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7CY3EGY8C5;
+				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.juston.lykAssignment.OneSignalNotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B0D6E36B1FB4056B00A69B13 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 68C83671A5AF1C243C9CF277 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7CY3EGY8C5;
+				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.juston.lykAssignment.OneSignalNotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -440,6 +623,15 @@
 			buildConfigurations = (
 				B0ACF09C1FB19DA00050991C /* Debug */,
 				B0ACF09D1FB19DA00050991C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B0D6E3691FB4056B00A69B13 /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0D6E36A1FB4056B00A69B13 /* Debug */,
+				B0D6E36B1FB4056B00A69B13 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

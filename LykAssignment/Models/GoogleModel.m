@@ -8,6 +8,31 @@
 
 #import "GoogleModel.h"
 
+@implementation GoogleMetadataModel
+
++ (JSONKeyMapper *)keyMapper
+{
+    return [[JSONKeyMapper alloc] initWithModelToJSONDictionary:@{
+                                                                  @"sourceId" : @"source"
+                                                                  }];
+}
+
++ (BOOL)propertyIsOptional:(NSString *)propertyName
+{
+    return YES;
+}
+
+- (void)setSourceIdWithNSDictionary:(NSDictionary *)dictionary {
+    if([dictionary valueForKey:@"id"]) {
+        self.sourceId = [dictionary valueForKey:@"id"];
+    }
+    if([dictionary valueForKey:@"type"]) {
+        self.type = [dictionary valueForKey:@"type"];
+    }
+}
+
+@end
+
 @implementation GooglePhotoModel
 
 + (BOOL)propertyIsOptional:(NSString *)propertyName

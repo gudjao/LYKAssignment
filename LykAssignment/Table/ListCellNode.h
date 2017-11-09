@@ -9,6 +9,14 @@
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import <ChameleonFramework/Chameleon.h>
 
+#import <GoogleSignIn/GoogleSignIn.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+
+#import <OneSignal/OneSignal.h>
+
+#import <AFNetworking/AFNetworking.h>
+
 @interface ListCellNode : ASCellNode
 
 @property (strong, nonatomic) ASNetworkImageNode *profileImageNode;
@@ -23,5 +31,8 @@
 @property (nonatomic, copy) NSString *phoneText;
 
 @property (strong, nonatomic) ASButtonNode *inviteButtonNode;
+
+@property (strong, nonatomic) NSString *userId;
+@property (strong, nonatomic) NSString *socialType;
 
 @end

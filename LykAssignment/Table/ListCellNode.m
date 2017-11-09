@@ -51,6 +51,11 @@
         _inviteButtonNode.hitTestSlop = UIEdgeInsetsMake(-5, -10, -5, -10);
         _inviteButtonNode.contentEdgeInsets = UIEdgeInsetsMake(5, 10, 5, 10);
         _inviteButtonNode.cornerRadius = 4.0f;
+        [_inviteButtonNode addTarget:self
+                              action:@selector(sendInvite)
+                    forControlEvents:ASControlNodeEventTouchUpInside];
+        
+        _socialType = @"";
     }
     return self;
 }
@@ -64,9 +69,13 @@
     ratioProfileImage.style.maxWidth = ASDimensionMake(100.0f);
     
     // Text
+    if(self.phoneTextNode.attributedText.string.length > 0) {
+        self.phoneTextNode.style.spacingAfter = 10.0f;
+    }
+    
     ASStackLayoutSpec *stackEmailPhone = [ASStackLayoutSpec
                                           stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
-                                          spacing:10.0f
+                                          spacing:0.0f
                                           justifyContent:ASStackLayoutJustifyContentStart
                                           alignItems:ASStackLayoutAlignItemsStretch
                                           children:@[self.phoneTextNode,
@@ -150,6 +159,57 @@
     _phoneTextNode.attributedText = [[NSAttributedString alloc] initWithString:self.phoneText
                                                                     attributes:_attrsOtherText];
     [self setNeedsLayout];
+}
+
+#pragma mark - Invite
+
+- (void)sendInvite {
+    if(self.userId == nil || self.userId.length == 0) {
+        return;
+    }
+    
+    NSString *urlString = @"https://onesignal.com/api/v1/notifications";
+    
+    NSString *inviteMessage = @"You have been invited";
+    if([self.socialType isEqualToString:@"Google"]) {
+        inviteMessage = [NSString stringWithFormat:@"You have been invited by user ID: %@", [[GIDSignIn sharedInstance] currentUser].userID];
+    } else if([self.socialType isEqualToString:@"Facebook"]) {
+        inviteMessage = [NSString stringWithFormat:@"You have been invited by user ID: %@", [FBSDKAccessToken currentAccessToken].userID];
+    }
+    
+    NSDictionary *params = @{
+                             @"app_id" : @"9fd78eb0-d757-44b0-be3b-21fff01428c6",
+                             @"contents" : @{
+                                     @"en" : inviteMessage
+                                     },
+                             @"filters" : @[
+                                     @{
+                                         @"field": @"tag",
+                                         @"key": [NSString stringWithFormat:@"lykKey%@", self.socialType],
+                                         @"relation": @"=",
+                                         @"value": self.userId
+                                         
+                                         }
+                                     ]
+                             };
+    
+    NSLog(@"Send to userId: %@", self.userId);
+    
+    // 292 - 107856047367683995163
+    
+    // 29 -  103970934315969002734
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager.requestSerializer setValue:@"Basic MTYyOTMyOTUtYjM4Ny00MmM4LTg1NmYtMWQzNmYzODkyNDU4" forHTTPHeaderField:@"Authorization"];
+    
+    [manager POST:urlString
+       parameters:params
+         progress:nil
+          success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+              NSLog(@"Success");
+          } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+              NSLog(@"Failed");
+          }];
 }
 
 @end

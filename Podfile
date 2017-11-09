@@ -13,6 +13,7 @@ pod 'FBSDKLoginKit'
 pod 'FBSDKShareKit'
 pod 'GoogleSignIn'
 pod 'GoogleAPIClientForREST'
+pod 'GoogleAPIClientForREST/Gmail'
 #pod 'Google/SignIn'
 
 # UI Framework
@@ -40,4 +41,11 @@ pod 'UICKeyChainStore'
 # Custom infinite scroll indicator
 pod 'SVPullToRefresh', :git => 'https://github.com/gudjao/SVPullToRefresh.git', :branch => 'dev'
 
+# Push Notifications
+pod 'OneSignal', '>= 2.5.2', '< 3.0'
+
+end
+
+target 'OneSignalNotificationServiceExtension' do
+    pod 'OneSignal', '>= 2.5.2', '< 3.0'
 end

@@ -35,18 +35,18 @@
         }];
         
         /*
-        self.googleButtonNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * _Nonnull{
-            GIDSignInButton *googleSigninButton = [[GIDSignInButton alloc] initWithFrame:CGRectZero];
-            [googleSigninButton setSelected:1];
-            return googleSigninButton;
-        }];
-        */
-
+         self.googleButtonNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * _Nonnull{
+         GIDSignInButton *googleSigninButton = [[GIDSignInButton alloc] initWithFrame:CGRectZero];
+         [googleSigninButton setSelected:1];
+         return googleSigninButton;
+         }];
+         */
+        
         self.googleButtonNode = [[ASButtonNode alloc] init];
         [self.googleButtonNode setTitle:@"Login with Google"
-                                 withFont:[UIFont systemFontOfSize:14.0f]
-                                withColor:[UIColor flatGrayColorDark]
-                                 forState:UIControlStateNormal];
+                               withFont:[UIFont systemFontOfSize:14.0f]
+                              withColor:[UIColor flatGrayColorDark]
+                               forState:UIControlStateNormal];
         self.googleButtonNode.backgroundColor = [UIColor whiteColor];
         self.googleButtonNode.hitTestSlop = UIEdgeInsetsMake(-5, -10, -5, -10);
         self.googleButtonNode.contentEdgeInsets = UIEdgeInsetsMake(5, 10, 5, 10);
@@ -106,17 +106,17 @@
     [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
     
     // Google
-    GIDSignIn *signIn = [GIDSignIn sharedInstance];
-    NSLog(@"Current scopes: %@", signIn.scopes);
-    signIn.scopes = @[@"https://www.googleapis.com/auth/contacts",
-                      @"https://www.googleapis.com/auth/contacts.readonly",
-                      @"https://www.googleapis.com/auth/plus.circles.read",
-                      @"https://www.googleapis.com/auth/plus.me",
-                      @"https://www.googleapis.com/auth/plus.profile.emails.read",
-                      @"https://www.googleapis.com/auth/plus.login"];
+    [GIDSignIn sharedInstance].scopes = @[@"https://www.googleapis.com/auth/contacts",
+                                          @"https://www.googleapis.com/auth/contacts.readonly",
+                                          @"https://www.googleapis.com/auth/plus.circles.read",
+                                          @"https://www.googleapis.com/auth/plus.me",
+                                          @"https://www.googleapis.com/auth/plus.profile.emails.read",
+                                          @"https://www.googleapis.com/auth/plus.login"];
     
-    signIn.uiDelegate = self;
-    signIn.delegate = self;
+    [GIDSignIn sharedInstance].uiDelegate = self;
+    [GIDSignIn sharedInstance].delegate = self;
+    
+    [[GIDSignIn sharedInstance] signInSilently];
     
     [self checkLogin];
 }
@@ -130,7 +130,32 @@
 #pragma mark - Login checker
 
 - (void)checkLogin {
-    if([[GIDSignIn sharedInstance] currentUser] || [FBSDKAccessToken currentAccessToken]) {
+    
+    BOOL goodTogo = 0;
+    
+    if([[GIDSignIn sharedInstance] currentUser]) {
+        NSLog(@"Google user: %@", [[GIDSignIn sharedInstance] currentUser].userID);
+        
+        [OneSignal sendTags:@{ @"lykKeyGoogle" : [[GIDSignIn sharedInstance] currentUser].userID }
+                  onSuccess:^(NSDictionary *result) {
+                      NSLog(@"Success google push notification!");
+                  } onFailure:^(NSError *error) {
+                      NSLog(@"Error - %@", error.localizedDescription);
+                  }];
+        goodTogo = 1;
+    }
+    
+    if([FBSDKAccessToken currentAccessToken]) {
+        [OneSignal sendTags:@{ @"lykKeyFacebook" : [FBSDKAccessToken currentAccessToken].userID }
+                  onSuccess:^(NSDictionary *result) {
+                      NSLog(@"Success facebook push notification!");
+                  } onFailure:^(NSError *error) {
+                      NSLog(@"Error - %@", error.localizedDescription);
+                  }];
+        goodTogo = 1;
+    }
+    
+    if(goodTogo) {
         [self.continueButtonNode setTitle:@"Click here to continue..."
                                  withFont:[UIFont boldSystemFontOfSize:15.0f]
                                 withColor:[UIColor flatNavyBlueColor]
@@ -225,7 +250,9 @@ presentViewController:(UIViewController *)viewController {
 // Dismiss the "Sign in with Google" view
 - (void)signIn:(GIDSignIn *)signIn
 dismissViewController:(UIViewController *)viewController {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self checkLogin];
+    }];
 }
 
 #pragma mark - Push to list vc
@@ -244,13 +271,13 @@ dismissViewController:(UIViewController *)viewController {
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

@@ -165,6 +165,8 @@
     NSString *urlString = [NSString stringWithFormat:@"https://people.googleapis.com/v1/people/me/connections?pageSize=10&personFields=photos,emailAddresses,names,phoneNumbers&access_token=%@", accessToken];
     NSString *urlEncoded = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
+    NSLog(@"URL: %@", urlString);
+    
     __weak typeof(self) weakSelf = self;
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
@@ -264,14 +266,24 @@
             GoogleConnectionModel *googleData = (GoogleConnectionModel *)data;
             
             GooglePhotoModel *photo = googleData.photos.firstObject;
-            GoogleNameModel *name = googleData.names.firstObject;
+            NSArray *names = googleData.names;
+            for (GoogleNameModel *nameModel in names) {
+                if([nameModel.metadata.type isEqualToString:@"PROFILE"]) {
+                    cellNode.nameText = nameModel.displayName;
+                    cellNode.userId = nameModel.metadata.sourceId;
+                } else {
+                    cellNode.nameText = nameModel.displayName;
+                    cellNode.userId = nameModel.metadata.sourceId;
+                }
+            }
             GoogleEmailModel *email = googleData.emailAddresses.firstObject;
             GooglePhoneModel *number = googleData.phoneNumbers.firstObject;
             
             cellNode.profileImageNode.URL = [NSURL URLWithString:photo.url];
-            cellNode.nameText = name.displayNameLastFirst;
             cellNode.emailText = email.value;
             cellNode.phoneText = number.value;
+
+            cellNode.socialType = @"Google";
         } else if([data isKindOfClass:[FacebookDataModel class]]) {
             FacebookDataModel *facebookData = (FacebookDataModel *)data;
             
@@ -279,6 +291,9 @@
             cellNode.nameText = facebookData.name;
             cellNode.emailText = @"";
             cellNode.phoneText = @"";
+            
+            cellNode.userId = facebookData.dataId;
+            cellNode.socialType = @"Facebook";
         }
         
         return cellNode;
