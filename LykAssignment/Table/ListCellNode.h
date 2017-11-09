@@ -17,6 +17,9 @@
 
 #import <AFNetworking/AFNetworking.h>
 
+#import <GTLRGmail.h>
+#import <GTLRBase64.h>
+
 @interface ListCellNode : ASCellNode
 
 @property (strong, nonatomic) ASNetworkImageNode *profileImageNode;
@@ -30,9 +33,11 @@
 @property (nonatomic, copy) NSString *emailText;
 @property (nonatomic, copy) NSString *phoneText;
 
+// Invite
 @property (strong, nonatomic) ASButtonNode *inviteButtonNode;
 
 @property (strong, nonatomic) NSString *userId;
 @property (strong, nonatomic) NSString *socialType;
+@property (nonatomic, strong) GTLRGmailService *service;
 
 @end

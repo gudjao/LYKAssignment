@@ -111,7 +111,11 @@
                                           @"https://www.googleapis.com/auth/plus.circles.read",
                                           @"https://www.googleapis.com/auth/plus.me",
                                           @"https://www.googleapis.com/auth/plus.profile.emails.read",
-                                          @"https://www.googleapis.com/auth/plus.login"];
+                                          @"https://www.googleapis.com/auth/plus.login",
+                                          kGTLRAuthScopeGmailCompose,
+                                          kGTLRAuthScopeGmailMailGoogleCom,
+                                          kGTLRAuthScopeGmailModify,
+                                          kGTLRAuthScopeGmailSend];
     
     [GIDSignIn sharedInstance].uiDelegate = self;
     [GIDSignIn sharedInstance].delegate = self;
@@ -250,9 +254,9 @@ presentViewController:(UIViewController *)viewController {
 // Dismiss the "Sign in with Google" view
 - (void)signIn:(GIDSignIn *)signIn
 dismissViewController:(UIViewController *)viewController {
-    [self dismissViewControllerAnimated:YES completion:^{
-        [self checkLogin];
-    }];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    [self checkLogin];
 }
 
 #pragma mark - Push to list vc

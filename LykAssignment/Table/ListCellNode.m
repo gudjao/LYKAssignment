@@ -161,9 +161,23 @@
     [self setNeedsLayout];
 }
 
+- (void)didLoad {
+    [super didLoad];
+    
+    // Initialize the service object.
+    self.service = [[GTLRGmailService alloc] init];
+    self.service.authorizer = [[GIDSignIn sharedInstance] currentUser].authentication.fetcherAuthorizer;
+}
+
 #pragma mark - Invite
 
 - (void)sendInvite {
+    
+    if(self.emailText.length > 0 || self.emailText != nil) {
+        [self sendMail];
+    }
+    
+    // Push notifications
     if(self.userId == nil || self.userId.length == 0) {
         return;
     }
@@ -172,7 +186,7 @@
     
     NSString *inviteMessage = @"You have been invited";
     if([self.socialType isEqualToString:@"Google"]) {
-        inviteMessage = [NSString stringWithFormat:@"You have been invited by user ID: %@", [[GIDSignIn sharedInstance] currentUser].userID];
+        inviteMessage = [NSString stringWithFormat:@"You have been invited by user: %@", [[GIDSignIn sharedInstance] currentUser].profile.givenName];
     } else if([self.socialType isEqualToString:@"Facebook"]) {
         inviteMessage = [NSString stringWithFormat:@"You have been invited by user ID: %@", [FBSDKAccessToken currentAccessToken].userID];
     }
@@ -196,7 +210,6 @@
     NSLog(@"Send to userId: %@", self.userId);
     
     // 292 - 107856047367683995163
-    
     // 29 -  103970934315969002734
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
@@ -210,6 +223,68 @@
           } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
               NSLog(@"Failed");
           }];
+}
+
+- (void)sendMail {
+    GTLRGmail_Message *message = [[GTLRGmail_Message alloc] init];
+    message.raw = GTLREncodeWebSafeBase64([self getFormattedRawMessage]);
+    
+    GTLRGmailQuery_UsersMessagesSend *querySend = [GTLRGmailQuery_UsersMessagesSend queryWithObject:message
+                                                                                             userId:@"me"
+                                                                                   uploadParameters:nil];
+    
+    [self.service executeQuery:querySend
+             completionHandler:^(GTLRServiceTicket * _Nonnull callbackTicket, id  _Nullable object, NSError * _Nullable callbackError) {
+                 NSLog(@"Object: %@", object);
+                 NSLog(@"%@", [[NSString alloc] initWithData:callbackError.userInfo[@"data"] encoding:NSUTF8StringEncoding]);
+             }];
+}
+
+- (NSData *)getFormattedRawMessage
+{
+    // Date string
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+    dateFormatter.dateFormat = @"EEE, dd MMM yyyy HH:mm:ss Z";
+    NSString *strDate = [dateFormatter stringFromDate:[NSDate date]];
+    NSString *finalDate = [NSString stringWithFormat:@"Date: %@\r\n", strDate];
+    
+    // From string
+    NSString *from = [NSString stringWithFormat:@"From: %@\r\n", [[GIDSignIn sharedInstance] currentUser].profile.email];
+    
+    // To string
+    NSString *to = [NSString stringWithFormat:@"To: <%@>\r\n", self.emailText];
+    
+    // CC string
+    NSString *cc = @"";
+    
+    // BCC string
+    NSString *bcc = @"";
+    
+    // Subject string
+    NSString *subject = @"Subject: Lyk Assingment\r\n\r\n";
+    
+    // Body string
+    NSString *body = [NSString stringWithFormat:@"Hello,\nYou have been invited. \n-%@. \r\n", [[GIDSignIn sharedInstance] currentUser].profile.givenName];
+    
+    // Final string to be returned
+    NSString *rawMessage = @"";
+    
+    // Send as "multipart/mixed"
+    NSString *contentTypeMain = @"Content-Type: multipart/mixed; boundary=\"project\"\r\n";
+    
+    // Reusable Boundary string
+    NSString *boundary = @"\r\n--project\r\n";
+    
+    // Body string
+    NSString *contentTypePlain = @"Content-Type: text/plain; charset=\"UTF-8\"\r\n";
+    
+    // Combine strings from "finalDate" to "body"
+    rawMessage = [[[[[[[[[contentTypeMain stringByAppendingString:finalDate] stringByAppendingString:from]stringByAppendingString:to]stringByAppendingString:cc]stringByAppendingString:bcc]stringByAppendingString:subject]stringByAppendingString:boundary]stringByAppendingString:contentTypePlain]stringByAppendingString:body];
+    
+    // End string
+    rawMessage = [rawMessage stringByAppendingString:@"\r\n--project--"];
+    
+    return [rawMessage dataUsingEncoding:NSUTF8StringEncoding];
 }
 
 @end
